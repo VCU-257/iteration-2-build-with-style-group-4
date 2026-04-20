@@ -162,24 +162,44 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script>
-    // Form validation
-    const form = document.getElementById('taskForm');
-    const modal = new bootstrap.Modal(document.getElementById('validationModal'));
+ <script>
+  const form = document.getElementById('taskForm');
+  const modal = new bootstrap.Modal(document.getElementById('validationModal'));
 
-    form.addEventListener('submit', function (event) {
-      if (!form.checkValidity()) {
-        event.preventDefault();
-        event.stopPropagation();
-        modal.show(); // Triggers modal interaction 
-      } else {
-        event.preventDefault();
-        alert("Task added successfully!"); 
-        window.location.href = 'tasks.html'; // Sends user to tasks.html page
-      }
-      form.classList.add('was-validated');
-    }, false);
-  </script>
+  form.addEventListener('submit', function (event) {
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+      modal.show(); 
+    } else {
+      event.preventDefault();
+
+      // 1. Capture the data from your form fields
+      const taskName = form.querySelector('input[type="text"]').value;
+      const taskDate = form.querySelector('input[type="date"]').value;
+      const taskPriority = form.querySelector('select').value;
+
+      // 2. Create a task object
+      const newTask = {
+        id: Date.now(), // Unique ID for deleting/editing later
+        name: taskName,
+        date: taskDate,
+        priority: taskPriority
+      };
+
+      // 3. Get existing tasks from localStorage, or start a new list
+      const tasks = JSON.parse(localStorage.getItem('userTasks')) || [];
+
+      // 4. Add the new task and save it back to localStorage
+      tasks.push(newTask);
+      localStorage.setItem('userTasks', JSON.stringify(tasks));
+
+      alert("Task added successfully!"); 
+      window.location.href = 'tasks.html'; 
+    }
+    form.classList.add('was-validated');
+  }, false);
+</script>
 </body>
 
 </html>
